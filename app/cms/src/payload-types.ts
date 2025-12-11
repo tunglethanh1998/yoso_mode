@@ -149,6 +149,7 @@ export interface User {
 export interface Media {
   id: number;
   alt: string;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -189,7 +190,6 @@ export interface News {
     [k: string]: unknown;
   } | null;
   link?: string | null;
-  onTeaser?: boolean | null;
   isNew?: boolean | null;
   hasContent?: boolean | null;
   updatedAt: string;
@@ -301,6 +301,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -326,7 +327,6 @@ export interface NewsSelect<T extends boolean = true> {
   thumbnail?: T;
   content?: T;
   link?: T;
-  onTeaser?: T;
   isNew?: T;
   hasContent?: T;
   updatedAt?: T;

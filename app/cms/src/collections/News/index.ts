@@ -1,17 +1,10 @@
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
-import { CollectionConfig, CollectionSlug, PayloadRequest } from 'payload'
+import { CollectionConfig, CollectionSlug } from 'payload'
 import { hasText } from './functions/hasText'
-
-const maxTitleLength = 60
+import { PayloadRequest } from 'node_modules/payload/dist/types'
 
 export const News: CollectionConfig = {
   slug: 'news',
-  access: {
-    read: () => true,
-    create: () => true,
-    update: () => true,
-    delete: () => true,
-  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'type', 'startDateTime', 'endDateTime', 'publishing_status'],
@@ -19,14 +12,11 @@ export const News: CollectionConfig = {
   fields: [
     {
       name: 'title',
-      label: 'タイトル',
       type: 'text',
       required: true,
-      maxLength: maxTitleLength,
     },
     {
       name: 'type',
-      label: 'タイプ',
       type: 'select',
       required: true,
       defaultValue: 'important',
@@ -42,7 +32,6 @@ export const News: CollectionConfig = {
       fields: [
         {
           name: 'startDateTime',
-          label: '開始日時',
           type: 'date',
           admin: {
             width: '50%',
@@ -59,7 +48,6 @@ export const News: CollectionConfig = {
       fields: [
         {
           name: 'endDateTime',
-          label: '終了日時',
           type: 'date',
           admin: {
             width: '50%',
@@ -68,7 +56,7 @@ export const News: CollectionConfig = {
               displayFormat: 'yyyy/MM/dd hh:mm:ss a',
             },
           },
-          validate: (value, { siblingData }) => {
+          validate: (value: any, { siblingData }: { siblingData: any }) => {
             const start = (siblingData as any)?.startDateTime
             if (!value) return true
             if (start && new Date(value) < new Date(start)) {
@@ -81,23 +69,21 @@ export const News: CollectionConfig = {
     },
     {
       name: 'isHighlighted',
-      label: 'ハイライト',
       type: 'checkbox',
       defaultValue: true,
       admin: {
-        condition: (data) => {
+        condition: (data: { type: string }) => {
           return data?.type === 'important'
         },
       },
     },
     {
       name: 'thumbnail',
-      label: 'サムネイル',
       type: 'upload',
       relationTo: 'media',
       admin: {
-        condition: (data) => {
-          return data?.type === 'column'
+        condition: (data: any) => {
+          return data.type === 'column'
         },
       },
       hasMany: false,
@@ -107,11 +93,10 @@ export const News: CollectionConfig = {
     },
     {
       name: 'content',
-      label: 'コンテンツ',
       type: 'richText',
       editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures.filter((feature) => {
+        features: ({ defaultFeatures }: { defaultFeatures: any }) => [
+          ...defaultFeatures.filter((feature: any) => {
             return [
               'bold',
               'heading',
@@ -128,13 +113,7 @@ export const News: CollectionConfig = {
     },
     {
       name: 'link',
-      label: 'リンク',
       type: 'text',
-    },
-    {
-      name: 'onTeaser',
-      label: 'ティーザー表示',
-      type: 'checkbox',
     },
     {
       name: 'isNew',
@@ -145,7 +124,7 @@ export const News: CollectionConfig = {
       hooks: {
         // News Tag will be display 7 day from publish day
         afterRead: [
-          ({ value, siblingData }) => {
+          ({ siblingData }: { siblingData: any }) => {
             const start = new Date(siblingData.startDateTime)
             const now = new Date()
             const diffDays = (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
@@ -162,7 +141,7 @@ export const News: CollectionConfig = {
       },
       hooks: {
         beforeChange: [
-          ({ value, siblingData }) => {
+          ({ siblingData }: { siblingData: any }) => {
             return hasText(siblingData.content)
           },
         ],

@@ -8,6 +8,9 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { News } from './collections/News'
+import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
+import { s3Storage } from '@payloadcms/storage-s3'
+import { S3_PREFIX } from './libs/enums'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -31,5 +34,25 @@ export default buildConfig({
     },
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    payloadCloudPlugin(),
+    s3Storage({
+      bucket: process.env.AWS_S3_BUCKET_NAME || '',
+      config: {
+        region: process.env.AWS_S3_BUCKET_REGION,
+        credentials: {
+          accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY || '',
+        },
+      },
+      collections: {
+        media: {
+          prefix: S3_PREFIX.PUBLIC_ASSETS,
+          generateFileURL: async ({ filename }) => {
+            return `${process.env.AWS_CLOUDFRONT_PREFIX}/${S3_PREFIX.PUBLIC_ASSETS}/${encodeURIComponent(filename)}`
+          },
+        },
+      },
+    }),
+  ],
 })

@@ -4,14 +4,18 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  // Req,
-  // Res,
+  Res,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-// import { Request, Response } from 'express';
 import { MemberService } from './member.service';
+import {
+  MemberCreateDto,
+  MemberCreateRespDto,
+  MemberLoginDto,
+  MemberLoginRespDto,
+} from './dto/login-dto';
 import { ApiConfigService } from 'src/libs/services/api-config.service';
-import { MemberLoginDto, MemberLoginRespDto } from './dto/login-dto';
+import type { Response } from 'express';
 
 @Controller('members')
 export class MemberController {
@@ -19,6 +23,20 @@ export class MemberController {
     private readonly memberService: MemberService,
     private readonly configService: ApiConfigService,
   ) {}
+
+  @ApiBody({
+    type: MemberCreateDto,
+  })
+  @ApiResponse({
+    type: MemberCreateRespDto,
+  })
+  @Post('create')
+  @HttpCode(HttpStatus.OK)
+  async create(@Body() props: MemberCreateDto) {
+    const { id, email, name } = await this.memberService.createMember(props);
+
+    return { id, email, name };
+  }
 
   @ApiBody({
     type: MemberLoginDto,
@@ -29,28 +47,27 @@ export class MemberController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
-    @Body() data: MemberLoginDto,
-    // @Req() req: Request,
-    // @Res() res: Response,
+    @Body() props: MemberLoginDto,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    // const member = await this.memberService.login(data.username, data.password);
+    const { email, password } = props;
 
-    // const domain = this.configService.get<string>('COOKIE_SESSION_DOMAIN');
-    // const secure = this.configService.get<boolean>('COOKIE_SESSION_SECURE');
-    // const sameSite = this.configService.get<'lax' | 'strict' | 'none'>(
-    //   'COOKIE_SESSION_SAMESITE',
-    // );
+    const { token } = await this.memberService.login({ email, password });
 
-    // res.cookie(this.configService.get('COOKIE_SESSION_NAME'), sessionId, {
-    //   httpOnly: this.configService.get<boolean>('COOKIE_SESSION_HTTPONLY'),
-    //   secure,
-    //   sameSite,
-    //   maxAge: this.configService.get<number>('COOKIE_SESSION_MAXAGE'),
-    //   domain,
-    // });
+    const domain = this.configService.cookieSessionDomain;
+    const secure = this.configService.cookieSessionSecure;
+    const sameSite = this.configService.cookieSessionSameSite;
+
+    res.cookie(this.configService.cookieSessionName, token, {
+      httpOnly: true,
+      secure,
+      sameSite: sameSite as 'lax' | 'strict' | 'none',
+      maxAge: this.configService.cookieSessionMaxAge,
+      domain,
+    });
 
     return {
-      // sessionId,
+      accessToken: token,
     };
   }
 }

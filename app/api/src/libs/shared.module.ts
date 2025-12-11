@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 
-import { ApiConfigService } from 'src/libs/services/api-config.service';
 import { PrismaService } from './services/prisma.service';
+import { ApiConfigService } from './services/api-config.service';
 
 @Global()
 @Module({

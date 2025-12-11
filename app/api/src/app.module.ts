@@ -6,10 +6,10 @@ import { TestModule } from './modules/test/test.module';
 
 @Module({
   imports: [
-    SharedModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    SharedModule,
     MemberModule,
     TestModule,
   ],

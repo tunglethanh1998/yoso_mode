@@ -42,4 +42,24 @@ export class ApiConfigService {
   get databaseUrl(): string {
     return this.getEnv('DATABASE_URL');
   }
+
+  get cookieSessionName(): string {
+    return this.getEnv('COOKIE_SESSION_NAME');
+  }
+
+  get cookieSessionDomain(): string {
+    return this.getEnv('COOKIE_SESSION_DOMAIN');
+  }
+
+  get cookieSessionSecure(): boolean {
+    return this.getEnv('COOKIE_SESSION_SECURE') === 'true';
+  }
+
+  get cookieSessionSameSite() {
+    return this.getEnv('COOKIE_SESSION_SAMESITE');
+  }
+
+  get cookieSessionMaxAge(): number {
+    return parseInt(this.getEnv('COOKIE_SESSION_MAXAGE'));
+  }
 }

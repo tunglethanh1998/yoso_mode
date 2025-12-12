@@ -70,4 +70,18 @@ export class MemberController {
       accessToken: token,
     };
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) res: Response) {
+    const cookieName = this.configService.cookieSessionName;
+    const domain = this.configService.cookieSessionDomain;
+
+    res.clearCookie(cookieName, {
+      domain,
+      path: '/',
+    });
+
+    return { message: 'Logout successfully' };
+  }
 }

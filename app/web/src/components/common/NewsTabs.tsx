@@ -65,7 +65,7 @@ export const NewsTabs = (props: NewsTabsProps) => {
                 onClick={() => handleTabClick(tab.key)}
               >
                 {active && (
-                  <div className="absolute top-0 left-0 w-full h-full bg-[url('/static/home/img_category_bg_sp.webp')] bg-cover"></div>
+                  <div className="absolute top-0 left-0 w-full h-full bg-cover"></div>
                 )}
                 {tab.label}
               </div>

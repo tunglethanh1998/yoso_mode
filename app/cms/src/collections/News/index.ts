@@ -1,10 +1,16 @@
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { PayloadRequest } from 'node_modules/payload/dist/types'
 import { CollectionConfig, CollectionSlug } from 'payload'
 import { hasText } from './functions/hasText'
-import { PayloadRequest } from 'node_modules/payload/dist/types'
 
 export const News: CollectionConfig = {
   slug: 'news',
+  access: {
+    read: () => true,
+    create: () => true,
+    update: () => true,
+    delete: () => true,
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'type', 'startDateTime', 'endDateTime', 'publishing_status'],

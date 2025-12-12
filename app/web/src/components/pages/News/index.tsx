@@ -111,7 +111,7 @@ export const NewsList = (props: NewsListProps) => {
   const { totalPages = 1, hasNextPage, hasPrevPage } = data || {};
 
   return (
-    <div className="bg-gray-7 pb-12.5 md:pb-25 bg-[url('/static/news/img_bg_dot.svg')]">
+    <div className="bg-gray-7 pb-12.5 md:pb-25">
 
       <div className="mt-8 md:mt-10 px-2.5">
         <div className="md:flex md:justify-center">

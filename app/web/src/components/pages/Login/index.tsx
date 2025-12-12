@@ -1,5 +1,7 @@
 "use client";
 
+import { authService } from "@/data/Auth";
+import { Button, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 
 type LoginFormData = {
@@ -10,28 +12,36 @@ type LoginFormData = {
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginFormData>();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = (data: LoginFormData) => {
+    authService.login(data);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen max-w-lg mx-auto">
+    <div className="max-w-md mx-auto mt-16">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-        <input
-          type="text"
+        <TextField
+          label="Email"
+          type="email"
           {...register("email")}
-          placeholder="Email"
-          className="border border-gray-300 rounded-md p-2"
+          fullWidth
+          className="mb-2"
         />
-        <input
+        <TextField
+          label="Password"
           type="password"
           {...register("password")}
-          placeholder="Password"
-          className="border border-gray-300 rounded-md p-2"
+          fullWidth
+          className="mb-4"
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded-md">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          className="mb-4"
+        >
           Login
-        </button>
+        </Button>
       </form>
     </div>
   );

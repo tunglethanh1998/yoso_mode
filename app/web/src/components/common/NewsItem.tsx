@@ -1,7 +1,7 @@
 "use client";
 import { NewsType } from "@/data/News";
 import { ROUTE } from "@/libs/enum";
-import { cn, pathParser } from "@/libs/function";
+import { cn } from "@/libs/function";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -32,19 +32,22 @@ export const NewsItem = (props: NewsItemProps) => {
       return (
         <div className="grid grid-cols-[8.3125rem,1fr] md:grid-cols-[13.9375rem,1fr] gap-x-4 md:gap-x-8 items-center">
           <div className="w-full md:w-[13.938rem] h-25 md:h-35 border-2 border-black overflow-hidden">
-            <img src={thumbnail?.url ?? ""} alt={thumbnail?.alt ?? "Column News"} className="column-img w-full h-25 md:h-35 object-cover" />
+            <img
+              src={thumbnail?.url ?? ""}
+              alt={thumbnail?.alt ?? "Column News"}
+              className="column-img w-full h-25 md:h-35 object-cover"
+            />
           </div>
           <div className="content grid md:gap-y-4">
             <div className="relative">
               <div
                 className={cn(
-                  "absolute top-0 left-0 invisible w-fit md:order-1 text-[0.9375rem] leading-[1.4] md:text-[1rem] font-medium md:leading-[1.6] underline",
+                  "absolute top-0 left-0 invisible w-fit md:order-1 text-[0.9375rem] leading-[1.4] md:text-[1rem] font-medium md:leading-[1.6] underline"
                 )}
               >
                 {title}
               </div>
-              <div className="relative w-fit md:order-1 text-[0.9375rem] leading-[1.4] md:text-[1rem] font-medium md:leading-[1.6] underline">
-              </div>
+              <div className="relative w-fit md:order-1 text-[0.9375rem] leading-[1.4] md:text-[1rem] font-medium md:leading-[1.6] underline"></div>
             </div>
             <div className="flex mt-3.5 md:mt-0 items-center space-x-2.5">
               <div className="font-medium text-[0.75rem] md:text-[0.875rem] leading text-gray-2">
@@ -80,16 +83,14 @@ export const NewsItem = (props: NewsItemProps) => {
         <div className="relative">
           <div
             className={cn(
-              "absolute top-0 left-0 invisible w-fit underline underline-offset-2 leading-4 text-14 md:text-14 md:leading-4 font-medium",
+              "absolute top-0 left-0 invisible w-fit underline underline-offset-2 leading-4 text-14 md:text-14 md:leading-4 font-medium"
             )}
           >
             {title}
           </div>
           <div className="w-fit underline underline-offset-2 leading-4 text-14 md:text-14 md:leading-4 font-medium mt-2.5 md:mt-2.5">
             <div className="flex items-center gap-x-1">
-              <div className="">
-                {title}
-              </div>
+              <div className="">{title}</div>
             </div>
           </div>
         </div>
@@ -102,13 +103,9 @@ export const NewsItem = (props: NewsItemProps) => {
 
   const isTargetExternal = !hasContent && !!link;
 
-  const linkUrl = isTargetExternal
-    ? link
-    : `${pathParser(ROUTE.NEWS_DETAILS, [type, id?.toString()])}?from=${encodeURIComponent(prevUrl)}`;
-
   return (
     <Link
-      href={linkUrl}
+      href="#"
       scroll={true}
       rel="noopener noreferrer"
       target={isTargetExternal ? "_blank" : "_self"}

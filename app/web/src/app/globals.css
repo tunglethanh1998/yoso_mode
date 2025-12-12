@@ -298,10 +298,6 @@ body {
   margin: 0 0.1875rem !important;
   border-radius: 0;
   background-color: var(--gray-3);
-
-  @include mq-up() {
-    margin: 0 0.375rem !important;
-  }
 }
 
 .swiper .swiper-pagination-bullet-active {

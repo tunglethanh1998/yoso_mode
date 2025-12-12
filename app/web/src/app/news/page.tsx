@@ -44,7 +44,7 @@ export default async function NewsPage(props: NewsPageProps) {
           "thumbnail",
         ],
       });
-    }),
+    })
   );
 
   return (

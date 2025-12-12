@@ -2,18 +2,30 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
-import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { fileURLToPath } from 'url'
 
-import { Users } from './collections/Users'
-import { Media } from './collections/Media'
-import { News } from './collections/News'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { Media } from './collections/Media'
+import { News } from './collections/News'
+import { Users } from './collections/Users'
 import { S3_PREFIX } from './libs/enums'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const parseEnvList = (envValue?: string): string[] => {
+  if (!envValue?.trim()) {
+    return []
+  }
+  return envValue
+    ? envValue
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean)
+    : []
+}
 
 export default buildConfig({
   admin: {
@@ -34,6 +46,8 @@ export default buildConfig({
     },
     push: false,
   }),
+  cors: parseEnvList(process.env.CORS_ORIGINS),
+  csrf: parseEnvList(process.env.CSRF_ORIGINS),
   sharp,
   plugins: [
     payloadCloudPlugin(),

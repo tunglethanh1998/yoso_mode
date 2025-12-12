@@ -1,49 +1,43 @@
-FROM node:24.11.1 AS base
+FROM node:22.12.0-alpine AS base
 
 ARG NEXT_PUBLIC_NODE_ENV=production
 ENV NEXT_PUBLIC_NODE_ENV=${NEXT_PUBLIC_NODE_ENV}
 
-FROM base AS builder
-RUN apk update
-RUN apk add --no-cache libc6-compat
+# ---------- deps ----------
+FROM base AS deps
 
 WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci
+
+# ---------- build ----------
+FROM base AS builder
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
 
 COPY . .
 
-FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat
-RUN corepack enable && corepack prepare npm@10.2.4 --activate
+RUN npm run build
 
-WORKDIR /app
-
-COPY --from=builder /app/out/json/ .
-RUN npm ci
-
-COPY --from=builder /app/out/full/ .
-RUN npx turbo run build
-
+# ---------- run ----------
 FROM base AS runner
 WORKDIR /app
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-RUN apk add --no-cache libc6-compat
-RUN npm install -g pm2
+ENV NODE_ENV=production
 
-COPY --from=installer /app/apps/web/public ./apps/web/public
+RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+# Copy standalone server + static assets
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
-
-CMD ["pm2-runtime", "start", "/app/apps/web/server.js", "-i", "max", "--name", "nextjs-app", "--", "--port", "3000", "--hostname", "0.0.0.0"]
+CMD ["node", "server.js", "--hostname", "0.0.0.0", "--port", "3000"]

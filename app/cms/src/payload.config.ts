@@ -44,6 +44,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
     },
+    push: false,
   }),
   cors: parseEnvList(process.env.CORS_ORIGINS),
   csrf: parseEnvList(process.env.CSRF_ORIGINS),

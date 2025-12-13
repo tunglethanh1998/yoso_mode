@@ -46,7 +46,7 @@ export const env = {
   production: envBuilder({
     apiBase: "http://host.docker.internal:3001/api",
     apiBaseInternal: "http://host.docker.internal:3001/api",
-    cmsBase: "http://host.docker.internal:3002/api",
+    cmsBase: "http://localhost:3002/api",
     cmsBaseInternal: "http://host.docker.internal:3002/api",
   }),
 }[ENV_NAME];
